@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.log
+*.db
+.env
+
+# Virtual Environments
+venv/
+env/
+
+# Playwright
+playwright/.cache/
+playwright/.local-browsers/
+
+# IDE/OS
+.DS_Store
+.vscode/
+.idea/
