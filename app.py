@@ -1,36 +1,51 @@
+import sys
+import asyncio
+
+if sys.platform == "win32":
+    asyncio.set_event_loop_policy(asyncio.WindowsProactorEventLoopPolicy())
+
+
 import os
 import traceback
-
 from dotenv import load_dotenv
-from flask import Flask, request, jsonify
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
 from main import main
 
-app = Flask(__name__)
 load_dotenv()
-@app.route('/start', methods=['POST'])
-def start():
+
+app = FastAPI()
+
+class SubmitRequest(BaseModel):
+    email: str
+    password: str
+    code: str
+    language: str
+    problemNum: int
+
+@app.post("/start")
+async def start(data: SubmitRequest):
     try:
-        data = request.get_json()
-        user_id = data.get("email")
-        user_pw = data.get("password")
-        code = data.get("code")
-        language = data.get("language")
-        problem = data.get("problemNum")
+
         capsolver_key = os.getenv("capsolver_key")
-        print(capsolver_key)
 
-        result, correct = main(user_id, user_pw, code, language, problem, capsolver_key)
+        result, correct = await main(
+            data.email, data.password, data.code, data.language, data.problemNum, capsolver_key
+        )
 
-        return jsonify({
+        return {
             "message": result,
             "correct": correct
-        }), 200
+        }
 
     except Exception as e:
         print("Exception occurred:", e)
         traceback.print_exc()
-        return jsonify({"message": str(e) or "Unknown error", "correct": False}), 500
+        raise HTTPException(status_code=500, detail=str(e) or "Unknown error")
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    import uvicorn
+    uvicorn.run("app:app", host="0.0.0.0", port=5000)
+
+
 
