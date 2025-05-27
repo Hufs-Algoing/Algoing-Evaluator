@@ -27,7 +27,7 @@ class SubmitRequest(BaseModel):
 async def start(data: SubmitRequest):
     try:
 
-        capsolver_key = os.getenv("capsolver_key")
+        capsolver_key = os.getenv("CAPSOLVER_KEY")
 
         result, correct = await main(
             data.email, data.password, data.code, data.language, data.problemNum, capsolver_key

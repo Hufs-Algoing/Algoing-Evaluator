@@ -51,4 +51,5 @@ jobs:
               fi
             fi
             
-            nohup python -u ./app.py ${{ secrets.CAPSOLVER_KEY }} > python-app.log 2>&1 &
+            CAPSOLVER_KEY=${{ secrets.CAPSOLVER_KEY }} nohup python -u ./app.py > python-app.log 2>&1 &
+
