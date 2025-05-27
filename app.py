@@ -1,4 +1,6 @@
 import os
+import traceback
+
 from dotenv import load_dotenv
 from flask import Flask, request, jsonify
 from main import main
@@ -25,7 +27,9 @@ def start():
         }), 200
 
     except Exception as e:
-        return jsonify({"message": str(e), "correct": False}), 500
+        print("Exception occurred:", e)
+        traceback.print_exc()
+        return jsonify({"message": str(e) or "Unknown error", "correct": False}), 500
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000)
