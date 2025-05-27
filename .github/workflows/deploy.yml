@@ -29,15 +29,24 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           script: |
             cd /home/ec2-user/python-app
-
+            
             [ ! -d "venv" ] && python3 -m venv venv
-
             source venv/bin/activate
-
+            
             pip install --upgrade pip
             pip install -r requirements.txt
-
-            pkill -f app.py || true
-
+            
+            CURRENT_PID=$(pgrep -f app.py | grep -v $$ || true)
+            if [ -z "$CURRENT_PID" ]; then
+              echo "> 현재 실행중인 app.py 프로세스가 없습니다."
+            else
+              echo "> 종료 중인 app.py PID: $CURRENT_PID"
+              kill -15 $CURRENT_PID
+              sleep 5
+              if kill -0 $CURRENT_PID 2>/dev/null; then
+                echo "> 강제 종료 중인 app.py PID: $CURRENT_PID"
+                kill -9 $CURRENT_PID
+              fi
+            fi
+            
             nohup python -u ./app.py ${{ secrets.CAPSOLVER_KEY }} > python-app.log 2>&1 &
-
