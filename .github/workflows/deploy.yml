@@ -36,6 +36,8 @@ jobs:
             pip install --upgrade pip
             pip install -r requirements.txt
             
+            python -m playwright install --with-deps
+            
             CURRENT_PID=$(pgrep -f app.py | grep -v $$ || true)
             if [ -z "$CURRENT_PID" ]; then
               echo "> 현재 실행중인 app.py 프로세스가 없습니다."
