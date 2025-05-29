@@ -17,8 +17,8 @@ load_dotenv()
 app = FastAPI()
 
 class SubmitRequest(BaseModel):
-    email: str
-    password: str
+    bojId: str
+    bojPassword: str
     code: str
     language: str
     problemNum: int
@@ -30,7 +30,7 @@ async def start(data: SubmitRequest):
         capsolver_key = os.getenv("CAPSOLVER_KEY")
 
         result, correct = await main(
-            data.email, data.password, data.code, data.language, data.problemNum, capsolver_key
+            data.bojId, data.bojPassword, data.code, data.language, data.problemNum, capsolver_key
         )
 
         return {
