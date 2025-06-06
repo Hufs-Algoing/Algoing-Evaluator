@@ -160,17 +160,15 @@ async def login(page: Page, user_id: str, user_pw: str, capsolver_key: str, is_f
         else:
             raise e
 
-async def main(user_id, user_pw, code, language, problem, capsolver_key):
-    async with async_playwright() as playwright:
-        browser = await playwright.firefox.launch(headless=True)
-        context = await browser.new_context(locale='en-US', viewport={'width': 1920, 'height': 1080})
-        page = await context.new_page()
+async def main(browser, user_id, user_pw, code, language, problem, capsolver_key):
+    context = await browser.new_context(locale='en-US', viewport={'width': 1920, 'height': 1080})
+    page = await context.new_page()
 
-        try:
-            result, correct = await run(context, user_id, user_pw, code, language, problem, capsolver_key)
-            return result, correct
-        finally:
-            await browser.close()
+    try:
+        result, correct = await run(context, user_id, user_pw, code, language, problem, capsolver_key)
+        return result, correct
+    finally:
+        await context.close()
 
 
 

@@ -3,7 +3,7 @@ name: BOJ Evaluator Deployment
 on:
   push:
     branches:
-      - 'release'
+      - 'release*'
 
 jobs:
   ci:
